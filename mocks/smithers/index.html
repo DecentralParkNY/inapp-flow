@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>it oh — catch the moment</title>
+<style>
+  :root{
+    --ink:#120f1a;
+    --paper:#f3ecff;
+    --glow:#ff4d8d;
+    --glow2:#7c4dff;
+    --amber:#ffd24d;
+    --mint:#4dffc4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(120% 80% at 20% 0%, #241a3d 0%, transparent 60%),
+      radial-gradient(120% 90% at 90% 100%, #3a1330 0%, transparent 55%),
+      var(--ink);
+    color:var(--paper);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100%;
+    padding:24px;
+    overflow-x:hidden;
+  }
+
+  /* phone frame */
+  .phone{
+    width:390px;
+    max-width:100%;
+    aspect-ratio:9/19;
+    border-radius:44px;
+    background:linear-gradient(180deg,#181227 0%, #0d0a16 100%);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:
+      0 40px 120px -30px rgba(124,77,255,.55),
+      0 0 0 10px rgba(255,255,255,.02),
+      inset 0 1px 0 rgba(255,255,255,.06);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    padding:26px 24px 30px;
+  }
+  .notch{
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    width:120px;height:28px;border-radius:20px;background:#000;
+    opacity:.8;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:30px;
+  }
+  .brand{
+    font-size:30px;font-weight:800;letter-spacing:-1.5px;
+    display:flex;align-items:center;gap:2px;
+  }
+  .brand .o{
+    display:inline-grid;place-items:center;
+    width:34px;height:34px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,var(--amber),var(--glow) 75%);
+    color:#160c14;font-size:19px;font-weight:900;
+    box-shadow:0 0 24px -4px var(--glow);
+    animation:pulse 3.2s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{box-shadow:0 0 40px 2px var(--glow)}}
+  .streak{
+    font-size:12px;font-weight:700;color:var(--amber);
+    border:1px solid rgba(255,210,77,.35);border-radius:999px;
+    padding:5px 11px;letter-spacing:.5px;
+  }
+
+  /* pitch */
+  .pitch{
+    margin-top:34px;
+    font-size:27px;line-height:1.12;font-weight:800;letter-spacing:-.8px;
+  }
+  .pitch b{
+    background:linear-gradient(90deg,var(--amber),var(--glow) 60%,var(--glow2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{
+    margin-top:12px;font-size:13.5px;line-height:1.5;
+    color:rgba(243,236,255,.62);max-width:30ch;
+  }
+
+  /* hero capture */
+  .stage{
+    flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:22px;
+  }
+  .halo{position:relative;width:210px;height:210px;display:grid;place-items:center}
+  .halo .ring{
+    position:absolute;inset:0;border-radius:50%;
+    border:1px solid rgba(255,77,141,.35);
+  }
+  .halo .ring.r2{inset:22px;border-color:rgba(124,77,255,.30)}
+  .halo .ring.r3{inset:44px;border-color:rgba(77,255,196,.22)}
+  .halo.live .ring{animation:emit 1.6s ease-out infinite}
+  .halo.live .ring.r2{animation-delay:.2s}
+  .halo.live .ring.r3{animation-delay:.4s}
+  @keyframes emit{
+    0%{transform:scale(.7);opacity:.9}
+    100%{transform:scale(1.35);opacity:0}
+  }
+
+  .ohbtn{
+    width:132px;height:132px;border-radius:50%;border:none;cursor:pointer;
+    background:radial-gradient(circle at 38% 30%,#fff6d6 0%,var(--amber) 22%,var(--glow) 62%,var(--glow2) 100%);
+    color:#1a0a12;font-size:40px;font-weight:900;letter-spacing:-2px;
+    box-shadow:0 20px 50px -12px var(--glow), inset 0 2px 6px rgba(255,255,255,.6);
+    transition:transform .12s ease, box-shadow .2s ease;
+    position:relative;z-index:2;
+  }
+  .ohbtn:active{transform:scale(.9)}
+  .caption{
+    font-size:13px;color:rgba(243,236,255,.7);text-align:center;
+    min-height:18px;font-weight:600;letter-spacing:.3px;
+  }
+
+  /* captured card */
+  .card{
+    width:100%;border-radius:20px;padding:16px 18px;
+    background:linear-gradient(140deg,rgba(255,77,141,.16),rgba(124,77,255,.14));
+    border:1px solid rgba(255,255,255,.12);
+    display:flex;gap:12px;align-items:center;
+    transform:translateY(14px) scale(.96);opacity:0;
+    transition:all .45s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .card.show{transform:translateY(0) scale(1);opacity:1}
+  .card .dot{
+    width:40px;height:40px;border-radius:12px;flex-shrink:0;
+    background:radial-gradient(circle at 35% 30%,var(--amber),var(--glow));
+    display:grid;place-items:center;font-size:20px;
+  }
+  .card .meta{font-size:12px;line-height:1.35}
+  .card .meta strong{font-size:14px;font-weight:800}
+  .card .meta span{color:rgba(243,236,255,.6)}
+
+  /* bottom nav */
+  .nav{
+    display:flex;justify-content:space-around;align-items:center;
+    margin-top:20px;padding-top:16px;
+    border-top:1px solid rgba(255,255,255,.07);
+    font-size:11px;color:rgba(243,236,255,.45);font-weight:600;
+  }
+  .nav .n{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .nav .n.active{color:var(--paper)}
+  .nav .ic{font-size:17px}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+
+    <div class="topbar">
+      <div class="brand">it<span class="o">oh</span></div>
+      <div class="streak">🔥 9-day streak</div>
+    </div>
+
+    <div class="pitch">
+      Catch the <b>“oh”</b> before it&nbsp;fades.
+    </div>
+    <div class="sub">One tap freezes the spark — the realization, the joke, the shiver — right as it hits you.</div>
+
+    <div class="stage">
+      <div class="halo" id="halo">
+        <span class="ring"></span><span class="ring r2"></span><span class="ring r3"></span>
+        <button class="ohbtn" id="ohbtn">oh</button>
+      </div>
+      <div class="caption" id="caption">Tap the second it lands.</div>
+
+      <div class="card" id="card">
+        <div class="dot" id="cardDot">✦</div>
+        <div class="meta">
+          <strong id="cardTitle">Moment caught</strong><br>
+          <span id="cardTime">just now · saved to your reel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <div class="n active"><span class="ic">◉</span>Catch</div>
+      <div class="n"><span class="ic">▤</span>Reel</div>
+      <div class="n"><span class="ic">✶</span>Sparks</div>
+    </div>
+  </div>
+
+<script>
+  const btn=document.getElementById('ohbtn');
+  const halo=document.getElementById('halo');
+  const cap=document.getElementById('caption');
+  const card=document.getElementById('card');
+  const cardTitle=document.getElementById('cardTitle');
+  const cardTime=document.getElementById('cardTime');
+  const cardDot=document.getElementById('cardDot');
+
+  const moods=[
+    {e:'💡',t:'A realization',c:'the idea that changed the afternoon'},
+    {e:'😂',t:'A joke that killed',c:'you had to save this one'},
+    {e:'🌅',t:'A quiet awe',c:'the light did something'},
+    {e:'🎧',t:'The chills drop',c:'that part of the song'},
+    {e:'🫶',t:'A warm one',c:'someone said the right thing'}
+  ];
+  let i=0, n=0;
+
+  btn.addEventListener('click',()=>{
+    const m=moods[i%moods.length]; i++; n++;
+    halo.classList.add('live');
+    setTimeout(()=>halo.classList.remove('live'),1300);
+    cap.textContent='Frozen. '+n+(n===1?' moment':' moments')+' today.';
+    cardDot.textContent=m.e;
+    cardTitle.textContent=m.t;
+    cardTime.textContent='just now · '+m.c;
+    card.classList.remove('show'); void card.offsetWidth; card.classList.add('show');
+  });
+</script>
+</body>
+</html>
